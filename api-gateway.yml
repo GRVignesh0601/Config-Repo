@@ -10,10 +10,6 @@ spring:
 
       default-filters:
         - PreserveHostHeader
-        - name: AddRequestHeader
-          args:
-            name: Authorization
-            value: "#{request.headers.Authorization}"
         - name: RemoveRequestHeader
           args:
             name: Cookie
