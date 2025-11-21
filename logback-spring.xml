@@ -5,11 +5,29 @@
     <property name="APP_NAME" value="${spring.application.name:-unknown}" />
     <property name="ENV" value="${APP_ENV:dev}" />
 
-    <appender name="LOGSTASH"
-              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
 
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp />
+                <pattern>
+                    <pattern>
+                        {
+                          "level": "%level",
+                          "logger": "%logger",
+                          "thread": "%thread",
+                          "message": "%message",
+                          "app": "${APP_NAME}",
+                          "environment": "${ENV}",
+                          "correlationId": "%X{correlationId}"
+                        }
+                    </pattern>
+                </pattern>
+                <arguments />
+                <stackTrace />
+            </providers>
+        </encoder>
     </appender>
 
     <root level="INFO">
